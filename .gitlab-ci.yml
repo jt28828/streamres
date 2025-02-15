@@ -2,6 +2,7 @@ stages:
   - check-release
   - get-dependencies
   - build
+  - upload
   - release
 
 .on-merge-request:
@@ -31,6 +32,12 @@ check-release:
   stage: check-release
   script:
     - ./releasetools gitlab checkReleaseBranch
+    - export VERSION=$(./releasetools getLatestVersion)
+    - echo "VERSION=$VERSION" >> .env
+  artifacts:
+    reports:
+      dotenv:
+        - .env
 
 get-dependencies:
   extends:
@@ -54,15 +61,30 @@ build-windows:
     paths:
       - output/streamres.exe
 
+upload-windows:
+  extends:
+    - .on-master
+  stage: upload
+  script: |
+    curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+       --upload-file output/streamres.exe \
+       ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/streamres/${VERSION}/streamres.exe
+
 create-release:
   extends:
     - .on-master
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
-    - export VERSION=$(./releasetools getLatestVersion)
     - export CHANGES=$(./releasetools extractChanges "$VERSION")
+    - export PACKAGE_REGISTRY_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/streamres/${VERSION}"
   release:
     name: "Streamres Release $VERSION"
     tag_name: $VERSION
     description: "${CHANGES}"
+    assets:
+      links:
+        - name: "Streamres Windows $VERSION"
+          url: "${PACKAGE_REGISTRY_URL}/streamres.exe"
+
+
