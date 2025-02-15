@@ -1,0 +1,68 @@
+stages:
+  - check-release
+  - get-dependencies
+  - build
+  - release
+
+.on-merge-request:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+.not-merge-request:
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+
+.on-master:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "$CI_DEFAULT_BRANCH"
+
+.golang-job:
+  image: golang:1.24
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+
+check-release:
+  extends: .on-merge-request
+  stage: check-release
+  script:
+    - ./releasetools gitlab checkReleaseBranch
+
+get-dependencies:
+  extends:
+    - .golang-job
+    - .not-merge-request
+  stage: get-dependencies
+  script:
+    - go get
+
+build-windows:
+  extends:
+    - .on-master
+    - .golang-job
+  stage: build
+  script:
+    - mkdir -p output
+    - export GOOS=windows
+    - export GOARCH=amd64
+    - go build -o output/streamres.exe
+  artifacts:
+    paths:
+      - output/streamres.exe
+
+create-release:
+  extends:
+    - .on-master
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - export VERSION=$(./releasetools getLatestVersion)
+    - export CHANGES=$(./releasetools extractChanges "$VERSION")
+  release:
+    name: "Streamres Release $VERSION"
+    tag_name: $VERSION
+    description: "${CHANGES}"
