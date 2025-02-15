@@ -79,7 +79,6 @@ create-release:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   script:
     - export CHANGES=$(./releasetools extractChanges "$VERSION")
-    - export PACKAGE_REGISTRY_URL="${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/streamres/${VERSION}"
   release:
     name: "Streamres Release $VERSION"
     tag_name: $VERSION
@@ -87,6 +86,4 @@ create-release:
     assets:
       links:
         - name: "Streamres Windows $VERSION"
-          url: "${PACKAGE_REGISTRY_URL}/streamres.exe"
-
-
+          url: https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/generic/streamres/${VERSION}/streamres.exe
