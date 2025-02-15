@@ -28,7 +28,9 @@ stages:
       - .go/pkg/mod/
 
 check-release:
-  extends: .on-merge-request
+  extends:
+  - .on-merge-request
+  - .on-master
   stage: check-release
   script:
     - ./releasetools gitlab checkReleaseBranch
