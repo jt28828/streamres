@@ -1,3 +1,5 @@
+//go:build windows
+
 package bundled
 
 import (
@@ -6,7 +8,7 @@ import (
 
 const Multimonitor = "MultiMonitorTool.exe"
 
-//go:embed executable/*
+//go:embed windowsExecutable/*
 var executables embed.FS
 
 func LoadMultiMonitorTool() []byte {

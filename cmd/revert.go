@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"log"
+	"log/slog"
 	"streamres/displays"
 	"strings"
 )
@@ -26,6 +27,7 @@ Restores usage of hardware monitors while disabling the virtual display`,
 		var virtualDisplay *displays.Display
 		var otherDisplays []displays.Display
 		for _, display := range state {
+			slog.Debug("Found display", slog.String("name", display.Adapter), slog.String("id", display.ShortMonitorId))
 			if display.PrimaryMonitor {
 				previousPrimaryDisplay = &display
 			} else if strings.Contains(display.Adapter, "Virtual Display Driver") {
@@ -60,7 +62,8 @@ Restores usage of hardware monitors while disabling the virtual display`,
 			}
 		}
 
-		return nil
+		// Finally purge the state file to prevent reverting again
+		return displays.DeleteStateFile()
 	},
 }
 

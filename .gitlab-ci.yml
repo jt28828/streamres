@@ -58,7 +58,7 @@ build-windows:
     - mkdir -p output
     - export GOOS=windows
     - export GOARCH=amd64
-    - go build -o output/streamres.exe
+    - go build -ldflags "-X streamres/globals.VERSION=$VERSION" -o output/streamres.exe
   artifacts:
     paths:
       - output/streamres.exe

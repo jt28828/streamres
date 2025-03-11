@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"streamres/displays"
 	"strings"
+	"time"
 )
 
 var (
@@ -43,7 +44,10 @@ Disables any attached physical monitors while in use and stores the state of the
 		// Found virtual monitor. Enable, set the resolution and mark it as the primary monitor.
 		displays.Enable(*virtualDisplay)
 		displays.SetConfig(displays.DisplayConfig{Width: width, Height: height, RefreshRate: refreshRate}, *virtualDisplay)
+		// Wait for changes to settle otherwise monitors can end up flickering
+		time.Sleep(1 * time.Second)
 		displays.SetAsPrimary(*virtualDisplay)
+		time.Sleep(1 * time.Second)
 
 		// Finally turn off all other monitors
 		for _, display := range otherDisplays {

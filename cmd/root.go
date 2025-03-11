@@ -5,9 +5,10 @@ import (
 	"os"
 	"streamres/globals"
 	"streamres/initialise"
+	"streamres/logging"
 )
 
-var debugMode = false
+var verbose = false
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -18,12 +19,13 @@ var rootCmd = &cobra.Command{
 	Long: `Streamres enables and disables virtual monitors and adjusts the resolution and refresh rate to suit the client device
 This can be used to stream games to clients using configuration not supported by physical monitors attached to the host`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		logging.Initialise(verbose)
 		return initialise.Tool()
 	},
 }
 
 func init() {
-	rootCmd.PersistentFlags().BoolVarP(&debugMode, "debug", "d", false, "Whether to run in debug mode and output errors to a logfile")
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "Whether to enable verbose logging")
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

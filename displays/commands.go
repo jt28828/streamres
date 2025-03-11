@@ -2,7 +2,7 @@ package displays
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"os/exec"
 	"path/filepath"
 	"streamres/bundled"
@@ -12,47 +12,53 @@ import (
 )
 
 func Enable(display Display) {
+	slog.Debug("Enabling display", slog.String("MonitorId", display.ShortMonitorId))
 	err := runMultiMonitorToolCommand("/enable", display.ShortMonitorId)
 	if err != nil {
-		log.Println(fmt.Errorf("error enabling display %s: %s", display.ShortMonitorId, err.Error()))
+		slog.Error("error enabling display", slog.String("MonitorId", display.ShortMonitorId), slog.String("Error", err.Error()))
 	}
 }
 
 func Disable(display Display) {
+	slog.Debug("Disabling display", slog.String("MonitorId", display.ShortMonitorId))
 	err := runMultiMonitorToolCommand("/disable", display.ShortMonitorId)
 	if err != nil {
-		log.Println(fmt.Errorf("error disabling display %s: %s", display.ShortMonitorId, err.Error()))
+		slog.Error("error disabling display", slog.String("MonitorId", display.ShortMonitorId), slog.String("Error", err.Error()))
 	}
 }
 
 func TurnOn(display Display) {
+	slog.Debug("Turning on display", slog.String("MonitorId", display.ShortMonitorId))
 	err := runMultiMonitorToolCommand("/TurnOn", display.ShortMonitorId)
 	if err != nil {
-		log.Println(fmt.Errorf("error turning on display %s: %s", display.ShortMonitorId, err.Error()))
+		slog.Error("error turning on display", slog.String("MonitorId", display.ShortMonitorId), slog.String("Error", err.Error()))
 	}
 
 }
 
 func TurnOff(display Display) {
+	slog.Debug("Turning off display", slog.String("MonitorId", display.ShortMonitorId))
 	err := runMultiMonitorToolCommand("/TurnOff", display.ShortMonitorId)
 	if err != nil {
-		log.Println(fmt.Errorf("error turning off display %s: %s", display.ShortMonitorId, err.Error()))
+		slog.Error("error turning off display", slog.String("MonitorId", display.ShortMonitorId), slog.String("Error", err.Error()))
 	}
-
 }
 
 func SetConfig(config DisplayConfig, display Display) {
 	configStr := fmt.Sprintf(`"Name=%s Width=%d Height=%d DisplayFrequency=%d"`, display.ShortMonitorId, config.Width, config.Height, config.RefreshRate)
+	slog.Debug("Updating display config", slog.String("MonitorId", display.ShortMonitorId), slog.String("NewConfig", configStr))
+
 	err := runEscapedMultiMonitorToolCommand("/SetMonitors", configStr)
 	if err != nil {
-		log.Println(fmt.Errorf("error updating display configuration %s: %s", display.ShortMonitorId, err.Error()))
+		slog.Error("error updating display configuration", slog.String("MonitorId", display.ShortMonitorId), slog.String("Error", err.Error()))
 	}
 }
 
 func SetAsPrimary(display Display) {
+	slog.Debug("Setting display as primary", slog.String("MonitorId", display.ShortMonitorId))
 	err := runEscapedMultiMonitorToolCommand("/SetPrimary", display.ShortMonitorId)
 	if err != nil {
-		log.Println(fmt.Errorf("error updating display configuration %s: %s", display.ShortMonitorId, err.Error()))
+		slog.Error("error updating display configuration", slog.String("MonitorId", display.ShortMonitorId), slog.String("Error", err.Error()))
 	}
 }
 
