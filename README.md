@@ -3,7 +3,8 @@
 Streamres simplifies streaming via Sunshine on Windows.
 It manages virtual monitors and sets the resolutions and refresh rates to match the connecting client device.
 
-This allows you to stream at resolutions or refresh rates that your connected hardware monitor may not support. eg: You can use 4K@60FPS when you only have a 1080p monitor but stream to a 4K TV
+This allows you to stream at resolutions or refresh rates that your connected hardware monitor may not support. eg: You
+can use 4K@60FPS when you only have a 1080p monitor but stream to a 4K TV
 
 ## Requirements
 
@@ -73,10 +74,10 @@ flowchart LR
     start[Launch Application 
     from Moonlight] -->
 virtual[Streamres enables the virtual monitor
-and sets the resolution and refresh rate 
+and sets the resolution and refresh rate
 to match your moonlight client]
-start --> hardware[Streamres turns off your 
-hardware monitor and sets it as the secondary display 
+start --> hardware[Streamres turns off your
+hardware monitor and sets it as the secondary display
 so games launch on the virtual monitor by default]
 ```
 
@@ -88,13 +89,15 @@ flowchart LR
     from Moonlight] -->
 virtual[Streamres disables the virtual monitor]
 start --> hardware[Streamres turns off your
-hardware monitor and sets it as the secondary display
-so games launch on the virtual monitor by default]
+hardware monitor and sets it as the main display]
 ```
 
 ## CLI Commands
 
-Use `streamres -h` to get more information on CLI commands. But the basics are:
+Use `streamres -h` to get more information on CLI commands. But the basics are below
+
+`streamres -v` can be run for all commands to enable verbose debug logging. This can help with pinpointing the cause of
+issues.
 
 ### Start
 
@@ -113,19 +116,22 @@ can be used when ending a stream and wanting to switch back to using hardware mo
 
 ### Install
 
-`streamres install` will automatically install Streamres and update sunshine to use it. This command is idempotent so don't worry about accidentally re-running it.
+`streamres install` will automatically install Streamres and update sunshine to use it. This command is idempotent so
+don't worry about accidentally re-running it.
 
 Actions taken during install are:
 
 - Create cache directory and copy embedded dependencies over there
 - Copy streamres executable into the `Sunshine/tools` folder
-- Update Sunshine's config file `Sunshine/config/sunshine.conf` to add streamres to the global commands for all streaming sessions 
+- Update Sunshine's config file `Sunshine/config/sunshine.conf` to add streamres to the global commands for all
+  streaming sessions
 
 ### Uninstall
 
-`streamres uninstall` reverts the actions taken by `streamres install` to remove it from your PC as much as possible. 
+`streamres uninstall` reverts the actions taken by `streamres install` to remove it from your PC as much as possible.
 
-It is **NOT** recommended that you run this while streaming, otherwise you will be responsible for reverting the virutal display and re-enabling your hardware display on stream end.
+It is **NOT** recommended that you run this while streaming, otherwise you will be responsible for reverting the virutal
+display and re-enabling your hardware display on stream end.
 
 ### Embedded dependencies
 
