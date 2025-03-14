@@ -7,14 +7,16 @@ import (
 	"path/filepath"
 	"streamres/admin"
 	"streamres/bundled"
+	"streamres/file"
 	"streamres/globals"
 	"streamres/stdinput"
 	"streamres/sunshine"
 )
 
+// Tool installs the streamres tool and configures sunshine to use it
 func Tool() error {
 	// Install needs to happen as an admin
-	err := CheckOrRequestAdminAccess()
+	err := checkOrRequestAdminAccess()
 	if err != nil {
 		return err
 	}
@@ -29,13 +31,13 @@ func Tool() error {
 
 	// Then move this binary to the sunshine tools folder
 	fmt.Println("Moving tool to Sunshine 'tools' folder")
-	sunshineFolder, err := CopyToolToSunshine()
+	sunshineFolder, err := copyToolToSunshine()
 	if err != nil {
 		slog.Debug("Install failed to copy the streamres binary into the Sunshine 'tools' folder")
 		return fmt.Errorf("install failed: %s", err.Error())
 	}
 
-	// Update sunshine config to add streamres commands
+	// Update sunshine config to add streamres commands to the global commands for all streaming
 	err = sunshine.UpdateCommandPrep(sunshineFolder)
 	if err != nil {
 		slog.Debug("Install failed to update sunshines global command prep to use streamres when starting and stopping a stream")
@@ -49,13 +51,27 @@ func Tool() error {
 	return nil
 }
 
-func CheckOrRequestAdminAccess() error {
+func copyToolToSunshine() (string, error) {
+	sunshinePath := stdinput.AskQuestionWithDefault(fmt.Sprintf("Enter your Sunshine install path. Enter to use default (%s): ", globals.DefaultSunshineInstallPath), globals.DefaultSunshineInstallPath)
+
+	// Get local
+	executable, err := os.Executable()
+	if err != nil {
+		slog.Debug("Failed to read running executable")
+		return sunshinePath, err
+	}
+
+	// Copy file
+	return sunshinePath, file.Copy(executable, filepath.Join(sunshinePath, "tools", globals.StreamresExecutableName))
+}
+
+func checkOrRequestAdminAccess() error {
 	if !admin.IsRunningElevatedPerms() {
 		fmt.Println("Streamres install needs to run as admin to copy files to protected locations like the Streamres/tools folder.")
 		stdinput.AskQuestion("You will be prompted to provide admin privileges after pressing Enter")
 
 		// Rerun the application as an admin
-		err := admin.ReRunElevatedPerms()
+		err := admin.ReRunWithElevatedPerms()
 		if err != nil {
 			return err
 		}
@@ -66,16 +82,6 @@ func CheckOrRequestAdminAccess() error {
 	}
 
 	return nil
-}
-
-func RequiredExecutablesPresent(files []os.DirEntry) bool {
-	for _, file := range files {
-		if file.Name() == bundled.Multimonitor {
-			return true
-		}
-	}
-
-	return false
 }
 
 func RecreateCacheDir() error {
@@ -89,7 +95,7 @@ func RecreateCacheDir() error {
 	}
 
 	// Add required dependencies to the cache folder
-	err = os.WriteFile(filepath.Join(globals.CacheDirPath, "version"), []byte(globals.VERSION), 0644)
+	err = os.WriteFile(filepath.Join(globals.CacheDirPath, "version"), []byte(globals.Version), 0644)
 	if err != nil {
 		return err
 	}

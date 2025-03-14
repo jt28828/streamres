@@ -5,9 +5,10 @@ import (
 	"path/filepath"
 )
 
-var VERSION = "1.0.0"
-
-var CacheDirPath string
+var (
+	Version      = "1.0.0"
+	CacheDirPath string
+)
 
 func init() {
 	cacheDir, err := os.UserCacheDir()

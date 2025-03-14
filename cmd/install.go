@@ -8,7 +8,7 @@ import (
 // installCmd represents the install command
 var installCmd = &cobra.Command{
 	Use:   "install",
-	Short: "Installs and configured streamres",
+	Short: "Installs and configures sunshine to use streamres",
 	Long: `Installs streamres by creating configuration directories and moving some files. 
 This includes installing dependencies and setting up a cache folder, 
 copying streamres to the sunshine tools folder, 

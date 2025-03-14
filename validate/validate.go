@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"streamres/bundled"
 	"streamres/globals"
-	"streamres/install"
 	"strings"
 )
 
@@ -14,18 +14,28 @@ import (
 func Application() error {
 	// Check if the cache directory has been initialised first
 	files, err := os.ReadDir(globals.CacheDirPath)
-	if err != nil || !install.RequiredExecutablesPresent(files) {
+	if err != nil || !RequiredExecutablesPresent(files) {
 		return fmt.Errorf("Required installation files not found. Try running 'install' first")
 	}
 
 	current, installedVersion := installedVersionIsCurrent(files)
 
 	if !current {
-		fmt.Printf("Version mismatch found, Running version: '%s', installed version: '%s'", globals.VERSION, installedVersion)
+		fmt.Printf("Version mismatch found, Running version: '%s', installed version: '%s'", globals.Version, installedVersion)
 		fmt.Printf("Running streamres install again is recommended to ensure up to date dependencies")
 	}
 
 	return nil
+}
+
+func RequiredExecutablesPresent(files []os.DirEntry) bool {
+	for _, file := range files {
+		if file.Name() == bundled.Multimonitor {
+			return true
+		}
+	}
+
+	return false
 }
 
 func installedVersionIsCurrent(files []os.DirEntry) (bool, string) {
@@ -36,7 +46,7 @@ func installedVersionIsCurrent(files []os.DirEntry) (bool, string) {
 				return false, "N/A"
 			}
 			version := strings.TrimSpace(string(contents))
-			return version == globals.VERSION, version
+			return version == globals.Version, version
 		}
 	}
 

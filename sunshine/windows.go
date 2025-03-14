@@ -4,11 +4,12 @@ package sunshine
 
 import (
 	"path/filepath"
+	"streamres/globals"
 	"strings"
 )
 
 func addStreamresCommands(commands []PrepCommand, sunshineFolder string) []PrepCommand {
-	streamresInstallPath := filepath.Join(sunshineFolder, "tools", "streamres.exe")
+	streamresInstallPath := filepath.Join(sunshineFolder, "tools", globals.StreamresExecutableName)
 
 	// Command to setup and tear down virtual monitor
 	startAndStopCommands := PrepCommand{
@@ -31,7 +32,7 @@ func addStreamresCommands(commands []PrepCommand, sunshineFolder string) []PrepC
 func removeStreamresCommands(commands []PrepCommand) []PrepCommand {
 	newCommands := []PrepCommand{}
 	for _, command := range commands {
-		if !strings.Contains(command.Do, "streamres.exe") && command.Do != "timeout /t 3" {
+		if !strings.Contains(command.Do, globals.StreamresExecutableName) && command.Do != "timeout /t 3" {
 			newCommands = append(newCommands, command)
 		}
 	}
