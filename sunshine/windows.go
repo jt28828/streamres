@@ -13,8 +13,8 @@ func addStreamresCommands(commands []PrepCommand, sunshineFolder string) []PrepC
 
 	// Command to setup and tear down virtual monitor
 	startAndStopCommands := PrepCommand{
-		Do:       `cmd /C ` + streamresInstallPath + ` start --height %SUNSHINE_CLIENT_HEIGHT% --width %SUNSHINE_CLIENT_WIDTH% --refresh %SUNSHINE_CLIENT_FPS%`,
-		Undo:     `cmd /C ` + streamresInstallPath + ` revert`,
+		Do:       `cmd /C "` + streamresInstallPath + `" start --height %SUNSHINE_CLIENT_HEIGHT% --width %SUNSHINE_CLIENT_WIDTH% --refresh %SUNSHINE_CLIENT_FPS%`,
+		Undo:     `cmd /C "` + streamresInstallPath + `" revert`,
 		Elevated: false,
 	}
 
