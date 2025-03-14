@@ -23,13 +23,16 @@ func ReRunWithElevatedPerms() error {
 	cwd, _ := os.Getwd()
 	args := strings.Join(os.Args[1:], " ")
 
-	verbPtr, _ := syscall.UTF16PtrFromString(verb)
-	exePtr, _ := syscall.UTF16PtrFromString(exe)
-	cwdPtr, _ := syscall.UTF16PtrFromString(cwd)
-	argPtr, _ := syscall.UTF16PtrFromString(args)
+	verbPtr := stringToUtf16Ptr(verb)
+	exePtr := stringToUtf16Ptr(exe)
+	argPtr := stringToUtf16Ptr(args)
+	cwdPtr := stringToUtf16Ptr(cwd)
 
-	// Show the command in a new window
-	var showCmd int32 = windows.SW_SHOWNORMAL
+	// Execute the command in a new window
+	return windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, windows.SW_SHOWNORMAL)
+}
 
-	return windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
+func stringToUtf16Ptr(input string) *uint16 {
+	output, _ := syscall.UTF16PtrFromString(input)
+	return output
 }
