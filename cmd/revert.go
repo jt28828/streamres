@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"log"
+	"log/slog"
 	"streamres/displays"
+	"streamres/validate"
 	"strings"
 )
 
@@ -15,6 +17,9 @@ var revertCmd = &cobra.Command{
 	Long: `Reverts cached display settings to what they were previously
 before the virtual monitor was enabled and configured.
 Restores usage of hardware monitors while disabling the virtual display`,
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		return validate.Application()
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		state := displays.GetPreviousState()
 		if state == nil {
@@ -26,6 +31,7 @@ Restores usage of hardware monitors while disabling the virtual display`,
 		var virtualDisplay *displays.Display
 		var otherDisplays []displays.Display
 		for _, display := range state {
+			slog.Debug("Found display", slog.String("name", display.Adapter), slog.String("id", display.ShortMonitorId))
 			if display.PrimaryMonitor {
 				previousPrimaryDisplay = &display
 			} else if strings.Contains(display.Adapter, "Virtual Display Driver") {
@@ -60,7 +66,8 @@ Restores usage of hardware monitors while disabling the virtual display`,
 			}
 		}
 
-		return nil
+		// Finally purge the state file to prevent reverting again
+		return displays.DeleteStateFile()
 	},
 }
 

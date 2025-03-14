@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+### Added
+- Added an install command for installing Streamres and automatically configuring Sunshine
+- Added an uninstall command for removing Streamres from the current PC
+- Added verbose logging options to assist with debugging
+
 ## 1.0.0
 
 ### Added

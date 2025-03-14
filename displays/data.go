@@ -45,6 +45,11 @@ func GetPreviousState() []Display {
 	return formatCsvToStructs(state)
 }
 
+func DeleteStateFile() error {
+	tsvOutputPath := filepath.Join(globals.CacheDirPath, "monitors.tsv")
+	return os.Remove(tsvOutputPath)
+}
+
 func getMonitorInfoCsv() []byte {
 	// Export monitor info using MultiMonitorTool
 	tsvOutputPath := filepath.Join(globals.CacheDirPath, "monitors.tsv")
@@ -58,7 +63,10 @@ func getMonitorInfoCsv() []byte {
 
 func loadMonitorTsvState() []byte {
 	tsvOutputPath := filepath.Join(globals.CacheDirPath, "monitors.tsv")
-	file, _ := os.ReadFile(tsvOutputPath)
+	file, err := os.ReadFile(tsvOutputPath)
+	if err != nil {
+		return nil
+	}
 
 	// File is in UTF16, need to convert to UTF8 to work with it
 
