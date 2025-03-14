@@ -15,6 +15,8 @@ func IsRunningElevatedPerms() bool {
 	return err == nil
 }
 
+// ReRunElevatedPerms runs the application again as an admin
+// See https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellexecutea
 func ReRunElevatedPerms() error {
 	verb := "runas"
 	exe, _ := os.Executable()
@@ -26,7 +28,8 @@ func ReRunElevatedPerms() error {
 	cwdPtr, _ := syscall.UTF16PtrFromString(cwd)
 	argPtr, _ := syscall.UTF16PtrFromString(args)
 
-	var showCmd int32 = 1 //SW_NORMAL
+	// Show the command in a new window
+	var showCmd int32 = windows.SW_SHOWNORMAL
 
 	return windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
 }

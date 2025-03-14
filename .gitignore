@@ -1,4 +1,4 @@
 .idea
 /streamres.exe
-/bundled/executable/*.chm
-/bundled/executable/*.txt
+/bundled/*executable/*.chm
+/bundled/*executable/*.txt

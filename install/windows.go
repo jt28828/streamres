@@ -10,16 +10,16 @@ import (
 	"streamres/stdinput"
 )
 
-func CopyToolToSunshine() error {
+func CopyToolToSunshine() (string, error) {
 	sunshinePath := stdinput.AskQuestionWithDefault(`Enter your Sunshine install path. Enter to use default (C:\Program Files\Sunshine): `, `C:\Program Files\Sunshine`)
 
 	// Get local
 	executable, err := os.Executable()
 	if err != nil {
 		slog.Debug("Failed to read running executable")
-		return err
+		return sunshinePath, err
 	}
 
 	// Copy file
-	return file.Copy(executable, filepath.Join(sunshinePath, "tools", "streamres.exe"))
+	return sunshinePath, file.Copy(executable, filepath.Join(sunshinePath, "tools", "streamres.exe"))
 }

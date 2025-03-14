@@ -7,9 +7,9 @@ import (
 	"path/filepath"
 	"streamres/admin"
 	"streamres/bundled"
-	"streamres/file"
 	"streamres/globals"
 	"streamres/stdinput"
+	"streamres/sunshine"
 )
 
 func Tool() error {
@@ -23,12 +23,22 @@ func Tool() error {
 	fmt.Println("Creating application directory:", globals.CacheDirPath)
 	err = RecreateCacheDir()
 	if err != nil {
+		slog.Debug("Install failed to create the application directory")
 		return fmt.Errorf("install failed: %s", err.Error())
 	}
 
+	// Then move this binary to the sunshine tools folder
 	fmt.Println("Moving tool to Sunshine 'tools' folder")
-	err = CopyToolToSunshine()
+	sunshineFolder, err := CopyToolToSunshine()
 	if err != nil {
+		slog.Debug("Install failed to copy the streamres binary into the Sunshine 'tools' folder")
+		return fmt.Errorf("install failed: %s", err.Error())
+	}
+
+	// Update sunshine config to add streamres commands
+	err = sunshine.UpdateCommandPrep(sunshineFolder)
+	if err != nil {
+		slog.Debug("Install failed to update sunshines global command prep to use streamres when starting and stopping a stream")
 		return fmt.Errorf("install failed: %s", err.Error())
 	}
 

@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"streamres/globals"
-	"streamres/initialise"
 	"streamres/logging"
+	"streamres/validate"
 )
 
 var verbose = false
@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 This can be used to stream games to clients using configuration not supported by physical monitors attached to the host`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 		logging.Initialise(verbose)
-		return initialise.Tool()
+		return validate.Application()
 	},
 }
 

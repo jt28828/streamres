@@ -12,7 +12,7 @@ const Multimonitor = "MultiMonitorTool.exe"
 var executables embed.FS
 
 func LoadMultiMonitorTool() []byte {
-	file, err := executables.ReadFile("executable/MultiMonitorTool.exe")
+	file, err := executables.ReadFile("windowsExecutable/MultiMonitorTool.exe")
 	if err != nil {
 		panic(err)
 	}
