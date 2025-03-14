@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"streamres/displays"
+	"streamres/validate"
 	"strings"
 	"time"
 )
@@ -20,6 +21,9 @@ var startCmd = &cobra.Command{
 	Short: "Enables the virtual monitor and sets configuration",
 	Long: `start enables the virtual monitor and sets the resolution and refresh rate requested by the client.
 Disables any attached physical monitors while in use and stores the state of the system before starting to allow a revert`,
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		return validate.Application()
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Get monitor state first
 		state := displays.GetCurrentState()

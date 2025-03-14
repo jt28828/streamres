@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"streamres/displays"
+	"streamres/validate"
 	"strings"
 )
 
@@ -16,6 +17,9 @@ var revertCmd = &cobra.Command{
 	Long: `Reverts cached display settings to what they were previously
 before the virtual monitor was enabled and configured.
 Restores usage of hardware monitors while disabling the virtual display`,
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		return validate.Application()
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		state := displays.GetPreviousState()
 		if state == nil {
