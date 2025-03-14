@@ -6,6 +6,15 @@ It manages virtual monitors and sets the resolutions and refresh rates to match 
 This allows you to stream at resolutions or refresh rates that your connected hardware monitor may not support. eg: You
 can use 4K@60FPS when you only have a 1080p monitor but stream to a 4K TV
 
+## NOTE
+
+This has now been made largely redundant by https://github.com/LizardByte/Sunshine/releases/tag/v2025.118.151840
+and https://github.com/LizardByte/libdisplaydevice
+which included display switching built into Sunshine for Windows.
+
+This may serve some use for Linux if a few window specific commands are modified, otherwise I'll Archive it if Sunshine
+devs add linux support to their display device switcher.
+
 ## Requirements
 
 ### Sunshine
